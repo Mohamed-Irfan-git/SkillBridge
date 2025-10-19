@@ -154,7 +154,7 @@ $notification_count = 3; // Fetch dynamically from DB if needed
       </li>
       <?php if(isset($_SESSION['user_id'])): ?>
       <li class="nav-item">
-        <a class="nav-link" href="dashboard.php">Dashboard</a>
+        <a class="nav-link" href="../view/dashboard.php">Dashboard</a>
       </li>
       <li class="nav-item">
         <a class="btn btn-desktop ms-3" href="../auth/logout.php">Logout</a>

@@ -17,7 +17,7 @@ if (isset($_POST['login'])) {
 
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['user_id'];
-            header("Location: ../dashboard.php");
+            header("Location: ../view/dashboard.php");
             exit();
         } else {
             echo "<script>alert('Invalid password. Please try again.');</script>";
