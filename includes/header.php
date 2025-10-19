@@ -1,8 +1,5 @@
 <?php
 session_start();
-
-// Example: logged-in user simulation
-// $_SESSION['user_id'] = 1; 
 $notification_count = 3; // Fetch dynamically from DB if needed
 ?>
 <!DOCTYPE html>
@@ -14,7 +11,6 @@ $notification_count = 3; // Fetch dynamically from DB if needed
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
@@ -27,6 +23,7 @@ $notification_count = 3; // Fetch dynamically from DB if needed
       color: #fff;
     }
 
+    /* Navbar */
     .navbar {
       background: linear-gradient(135deg, #002853, #003f7d, #0059a0);
       box-shadow: 0 4px 10px rgba(0,0,0,0.3);
@@ -41,9 +38,9 @@ $notification_count = 3; // Fetch dynamically from DB if needed
     .nav-link {
       color: #e0e0e0 !important;
       font-weight: 500;
-      margin-right: 10px;
-      transition: 0.3s;
+      margin-right: 40px;
       position: relative;
+      transition: 0.3s;
     }
 
     .nav-link:hover {
@@ -51,31 +48,72 @@ $notification_count = 3; // Fetch dynamically from DB if needed
       text-shadow: 0 0 5px rgba(0,191,255,0.5);
     }
 
-    .btn-outline-light {
-      border-color: rgba(255,255,255,0.6);
-      color: #fff;
-      transition: 0.3s;
-    }
-
-    .btn-outline-light:hover {
-      background: #00bfff;
-      color: #000 !important;
-      border-color: #00bfff;
-      text-shadow: none;
-    }
-
+    /* Notification badge */
     .badge {
-      position: absolute;
-      top: -5px;
-      right: -10px;
       padding: 3px 6px;
       font-size: 0.7rem;
       background: #ff3d3d;
       color: #fff;
       border-radius: 50%;
       box-shadow: 0 0 5px rgba(0,0,0,0.5);
+      display: inline-block;
     }
 
+    /* Buttons for desktop login/logout */
+    .btn-desktop {
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: #fff !important;
+      font-weight: 500;
+      border-radius: 25px;
+      padding: 6px 18px;
+      border: none;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0,191,255,0.4);
+    }
+
+    .btn-desktop:hover {
+      background: linear-gradient(90deg, #0072ff, #00c6ff);
+      color: #fff !important;
+      box-shadow: 0 6px 15px rgba(0,191,255,0.6);
+    }
+
+    /* Mobile Side Menu */
+    #mobileMenu {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100%;
+      background: linear-gradient(135deg, #002853, #003f7d, #0059a0);
+      z-index: 1050;
+      padding-top: 60px;
+      transition: 0.3s;
+    }
+
+    #mobileMenu a {
+      display: block;
+      padding: 15px 20px;
+      color: #e0e0e0;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    #mobileMenu a:hover {
+      background: #004a99;
+      color: #00bfff;
+    }
+
+    #mobileMenu .badge {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+    }
+
+    #mobileMenu.show {
+      left: 0;
+    }
+
+    /* Content */
     .content {
       padding: 100px 40px 40px 40px;
       text-align: center;
@@ -91,43 +129,80 @@ $notification_count = 3; // Fetch dynamically from DB if needed
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-  <div class="container">
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
     <a class="navbar-brand" href="../index.php">SkillBridge</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <button class="btn d-lg-none" id="menuBtn">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto align-items-center">
-        <li class="nav-item">
-          <a class="nav-link" href="../index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../tasks/tasks.php">Tasks</a>
-        </li>
-        <li class="nav-item position-relative">
-          <a class="nav-link" href="notifications.php">
-            Notifications
-            <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
-              <span class="badge"><?php echo $notification_count; ?></span>
-            <?php endif; ?>
-          </a>
-        </li>
-
-        <?php if (isset($_SESSION['user_id'])): ?>
-        <li class="nav-item">
-          <a class="nav-link" href="dashboard.php">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link btn btn-sm btn-outline-light ms-2" href="../auth/logout.php">Logout</a>
-        </li>
-        <?php else: ?>
-        <li class="nav-item">
-          <a class="nav-link btn btn-sm btn-outline-light ms-2" href="../auth/login.php">Login</a>
-        </li>
-        <?php endif; ?>
-      </ul>
-    </div>
+    <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center">
+      <li class="nav-item">
+        <a class="nav-link" href="../index.php">Home</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="../tasks/tasks.php">Tasks</a>
+      </li>
+      <li class="nav-item position-relative">
+        <a class="nav-link" href="notifications.php">
+          Notifications
+          <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
+            <span class="badge position-absolute top-0 start-100 translate-middle">
+              <?php echo $notification_count; ?>
+            </span>
+          <?php endif; ?>
+        </a>
+      </li>
+      <?php if(isset($_SESSION['user_id'])): ?>
+      <li class="nav-item">
+        <a class="nav-link" href="dashboard.php">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-desktop ms-3" href="../auth/logout.php">Logout</a>
+      </li>
+      <?php else: ?>
+      <li class="nav-item">
+        <a class="btn btn-desktop ms-3" href="../auth/login.php">Login</a>
+      </li>
+      <?php endif; ?>
+    </ul>
   </div>
 </nav>
+
+<!-- Mobile Side Menu -->
+<div id="mobileMenu">
+  <a href="../index.php">Home</a>
+  <a href="../tasks/tasks.php">Tasks</a>
+  <a href="notifications.php">
+    Notifications
+    <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
+      <span class="badge"><?php echo $notification_count; ?></span>
+    <?php endif; ?>
+  </a>
+  <?php if(isset($_SESSION['user_id'])): ?>
+  <a href="dashboard.php">Dashboard</a>
+  <a href="../auth/logout.php">Logout</a>
+  <?php else: ?>
+  <a href="../auth/login.php">Login</a>
+  <?php endif; ?>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('show');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+      mobileMenu.classList.remove('show');
+    }
+  });
+</script>
+</body>
+</html>
