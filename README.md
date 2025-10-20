@@ -156,12 +156,6 @@ CREATE TABLE notifications (
 
 
 
-## 📸 Screenshots
-Below are placeholders for key interface snapshots showcasing SkillBridge’s functionality. To add screenshots:
-1. Save images (e.g., `task_list.png`, `chat_modal.png`, `notifications.png`) in a `screenshots` folder within the repository.
-2. Update this section with the appropriate Markdown image links.
-
-
 ## 🔮 Future Enhancements
 - **Real-Time Notifications**: Integrate WebSockets or Pusher for instant alerts
 - **Admin Panel**: Centralized management for users and tasks
