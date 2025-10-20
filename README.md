@@ -72,7 +72,7 @@ The platform ensures an efficient, transparent, and user-friendly experience for
       ```
 
 4. **Set Up Database**:
-    - Import the SQL schema (see [Database Schema](#database-schema)) into MySQL/MariaDB.
+    - Import the SQL schema (see [Database Schema](#config/init.sql)) into MySQL/MariaDB.
 
 5. **Start Server**:
     - Launch your server (e.g., XAMPP, WAMP, or LAMP).
