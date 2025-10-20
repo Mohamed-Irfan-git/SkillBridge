@@ -4,7 +4,7 @@ require_once './includes/header.php';
 ?>
 
 <!-- Hero Section -->
-<section class="hero" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 70px 20px; background: linear-gradient(135deg, #002853, #003f7d, #0059a0); color: #fff;">
+<section class="hero" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 70px;padding-bottom: 20px; background: linear-gradient(135deg, #002853, #003f7d, #0059a0); color: #fff;">
     <h1 style="font-size: 3rem; font-weight: 700; margin-bottom: 20px; color: #ffffff; text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);">
         Grow Together by Exchanging Skills
     </h1>

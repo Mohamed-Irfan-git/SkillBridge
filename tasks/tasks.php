@@ -1,7 +1,10 @@
 <?php
-session_start();
-require_once "../includes/header.php";
+
+    session_start();
+    require_once "../includes/header.php";
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,8 +18,6 @@ require_once "../includes/header.php";
 
   <style>
     body {
-      margin: 0;
-      padding-top: 50px;
       font-family: "Poppins", sans-serif;
       min-height: 100vh;
       background: linear-gradient(135deg, #002853, #003f7d, #0059a0);

@@ -1,4 +1,5 @@
 <?php
+global $conn;
 session_start();
 require '../config/db_connection.php';
 
@@ -26,4 +27,4 @@ if($stmt->execute()){
     echo "error";
 }
 $stmt->close();
-?>
+
