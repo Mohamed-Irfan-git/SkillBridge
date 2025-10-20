@@ -176,8 +176,6 @@ Below are placeholders for key interface snapshots showcasing SkillBridge’s fu
 3. Ensure code is tested and follows PHP best practices.
 4. Submit a **pull request** with a clear description of changes.
 
-## 📄 License
-This project is licensed under the [MIT License](LICENSE).
 ## 👨‍💻 Author
 Developed by [Mohamed Irfan](https://github.com/Mohamed-Irfan-git).
 
