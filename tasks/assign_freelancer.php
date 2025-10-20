@@ -1,4 +1,5 @@
 <?php
+global $conn;
 session_start();
 require '../config/db_connection.php';
 
@@ -48,4 +49,4 @@ $stmt3->execute();
 $stmt3->close();
 
 echo "success";
-?>
+

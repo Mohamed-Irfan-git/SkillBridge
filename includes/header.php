@@ -1,6 +1,22 @@
 <?php
+global $conn;
 session_start();
-$notification_count = 3; // Fetch dynamically from DB if needed
+
+require_once __DIR__ . '/../config/db_connection.php';
+
+$notification_count = 0;
+    if (isset($_SESSION['user_id'])) {
+
+        $user_id = $_SESSION['user_id'];
+        $sql = "SELECT COUNT(*) AS count FROM notifications WHERE user_id = ? AND status = 'unread'";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $notification_count = $row['count'] ?? 0;
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +34,6 @@ $notification_count = 3; // Fetch dynamically from DB if needed
     body {
       margin: 0;
       font-family: "Poppins", sans-serif;
-      min-height: 100vh;
       background: linear-gradient(135deg, #002853, #003f7d, #0059a0);
       color: #fff;
     }
@@ -30,7 +45,7 @@ $notification_count = 3; // Fetch dynamically from DB if needed
     }
 
     .navbar-brand {
-      font-family: 'Pacifico', cursive;
+      font-family: 'Paoppins', cursive;
       color: #00bfff !important;
       font-size: 1.8rem;
     }
@@ -143,7 +158,7 @@ $notification_count = 3; // Fetch dynamically from DB if needed
         <a class="nav-link" href="../tasks/tasks.php">Tasks</a>
       </li>
       <li class="nav-item position-relative">
-        <a class="nav-link" href="notifications.php">
+        <a class="nav-link" href="../view/notification.php">
           Notifications
           <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
             <span class="badge position-absolute top-0 start-100 translate-middle">
@@ -172,14 +187,14 @@ $notification_count = 3; // Fetch dynamically from DB if needed
 <div id="mobileMenu">
   <a href="../index.php">Home</a>
   <a href="../tasks/tasks.php">Tasks</a>
-  <a href="notifications.php">
+  <a href="../view/notification.php">
     Notifications
     <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
       <span class="badge"><?php echo $notification_count; ?></span>
     <?php endif; ?>
   </a>
   <?php if(isset($_SESSION['user_id'])): ?>
-  <a href="dashboard.php">Dashboard</a>
+  <a href="../view/dashboard.php">Dashboard</a>
   <a href="../auth/logout.php">Logout</a>
   <?php else: ?>
   <a href="../auth/login.php">Login</a>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/includes/header.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/apply_task.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/assign_freelancer.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/load_messages.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/post_task.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/send_messages.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/task_chat.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/update_task.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/tasks/view_task.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/view/dashboard.php" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/view/notification.php" dialect="GenericSQL" />
+  </component>
+</project>

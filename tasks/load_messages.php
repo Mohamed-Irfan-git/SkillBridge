@@ -1,4 +1,5 @@
 <?php
+global $conn;
 session_start();
 require '../config/db_connection.php';
 
@@ -31,4 +32,4 @@ if ($res->num_rows === 0) {
     }
 }
 $stmt->close();
-?>
+

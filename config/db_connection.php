@@ -4,7 +4,8 @@
     $host = "localhost";
     $db = "skillbridge";
 
-    $conn = new mysqli($host,$username,$pass,$db);
+   global $conn;
+   $conn= new mysqli($host,$username,$pass,$db);
 
 
     if($conn->connect_error){

@@ -1,34 +1,35 @@
 <?php
-session_start();
-require '../config/db_connection.php';
+    global $conn;
+    session_start();
+    require '../config/db_connection.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth/login.php");
-    exit;
-}
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: ../auth/login.php");
+        exit;
+    }
 
-$user_id = $_SESSION['user_id'];
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $user_id = $_SESSION['user_id'];
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Fetch tasks
-$sql = "SELECT t.*, u.name AS creator_name 
-        FROM tasks t 
-        JOIN users u ON t.user_id = u.user_id
-        WHERE t.status='open'";
+    // Fetch tasks
+    $sql = "SELECT t.*, u.name AS creator_name 
+            FROM tasks t 
+            JOIN users u ON t.user_id = u.user_id
+            WHERE t.status='open'";
 
-if ($search) {
-    $sql .= " AND t.skill_required LIKE ?";
-}
+    if ($search) {
+        $sql .= " AND t.skill_required LIKE ?";
+    }
 
-$stmt = $conn->prepare($sql);
-if ($search) {
-    $likeSearch = "%$search%";
-    $stmt->bind_param("s", $likeSearch);
-}
-$stmt->execute();
-$result = $stmt->get_result();
-$tasks = $result->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
+    $stmt = $conn->prepare($sql);
+    if ($search) {
+        $likeSearch = "%$search%";
+        $stmt->bind_param("s", $likeSearch);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $tasks = $result->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +37,7 @@ $stmt->close();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>View Tasks</title>
+<title>SKillBridge</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
@@ -209,8 +210,17 @@ body {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<?php if(isset($_GET['applied']) && $_GET['applied'] == 1): ?>
+    <script>
+        alert("✅ You have successfully applied for the task!");
+    </script>
+<?php endif; ?>
 <script>
-// Load messages
+
+
+
+    // Load messages
 function loadMessages(taskId) {
     fetch('load_messages.php?task_id=' + taskId)
         .then(res => res.text())
