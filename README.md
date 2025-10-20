@@ -1,5 +1,5 @@
 
-# SkillBridge – Freelance Task Management Platform
+# SkillBridge – Skill Exchange Platform
 
 [![MIT License](https://img.shields.io/github/license/Mohamed-Irfan-git/skillbridge?color=green)](LICENSE)
 [![PHP](https://img.shields.io/badge/PHP-7%2B-blue?logo=php)](https://www.php.net/)
