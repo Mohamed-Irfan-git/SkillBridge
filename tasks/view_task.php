@@ -1,63 +1,49 @@
 <?php
-    global $conn;
-    session_start();
-    require '../config/db_connection.php';
+global $conn;
+session_start();
+require '../config/db_connection.php';
+require '../includes/header.php';
 
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: ../auth/login.php");
-        exit;
-    }
-
-    $user_id = $_SESSION['user_id'];
-    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-    // Fetch tasks
-    $sql = "SELECT t.*, u.name AS creator_name 
-            FROM tasks t 
-            JOIN users u ON t.user_id = u.user_id
-            WHERE t.status='open'";
-
-    if ($search) {
-        $sql .= " AND t.skill_required LIKE ?";
-    }
-
-    $stmt = $conn->prepare($sql);
-    if ($search) {
-        $likeSearch = "%$search%";
-        $stmt->bind_param("s", $likeSearch);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $tasks = $result->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKillBridge</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-body {
-    background: #002853;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../auth/login.php");
+    exit;
 }
 
+$user_id = $_SESSION['user_id'];
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Fetch tasks
+$sql = "SELECT t.*, u.name AS creator_name 
+        FROM tasks t 
+        JOIN users u ON t.user_id = u.user_id
+        WHERE t.status='open'";
+
+if ($search) {
+    $sql .= " AND t.skill_required LIKE ?";
+}
+
+$stmt = $conn->prepare($sql);
+if ($search) {
+    $likeSearch = "%$search%";
+    $stmt->bind_param("s", $likeSearch);
+}
+$stmt->execute();
+$result = $stmt->get_result();
+$tasks = $result->fetch_all(MYSQLI_ASSOC);
+$stmt->close();
+?>
+
+<style>
 .card {
     background: #003f7d;
     border-radius: 12px;
-
 }
 
 .card-title {
     color: #00bfff;
     font-family: 'Poppins', sans-serif;
-
 }
+
 .card p {
     color: #e0e0e0;
 }
@@ -144,12 +130,11 @@ body {
     cursor: pointer;
     font-size: 18px;
 }
+
 .chat-input button:hover {
     background-color: #0b7d6e;
 }
 </style>
-</head>
-<body>
 
 <div class="container py-5">
     <h2 class="text-center mb-4">Available Tasks</h2>
@@ -209,18 +194,14 @@ body {
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 <?php if(isset($_GET['applied']) && $_GET['applied'] == 1): ?>
     <script>
         alert("✅ You have successfully applied for the task!");
     </script>
 <?php endif; ?>
+
 <script>
-
-
-
-    // Load messages
+// Load messages
 function loadMessages(taskId) {
     fetch('load_messages.php?task_id=' + taskId)
         .then(res => res.text())
@@ -254,5 +235,5 @@ function sendMessage(taskId) {
 setInterval(() => loadMessages(<?php echo $task['task_id']; ?>), 2000);
 <?php endforeach; ?>
 </script>
-</body>
-</html>
+
+<?php require_once '../includes/footer.php'; ?>
