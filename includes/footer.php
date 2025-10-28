@@ -1,5 +1,5 @@
 <!-- footer.php -->
-<footer  style="background: linear-gradient(135deg, #003f7d, #003f7d, #0059a0); color: #fff; padding: 50px ;">
+<footer  style="background: linear-gradient(135deg, #003f7d, #003f7d, #0059a0); color: #fff; padding: 50px">
     <div class="container">
         <div class="row">
             <!-- About Section -->

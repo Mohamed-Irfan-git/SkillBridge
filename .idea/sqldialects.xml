@@ -11,6 +11,5 @@
     <file url="file://$PROJECT_DIR$/tasks/update_task.php" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/tasks/view_task.php" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/view/dashboard.php" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/view/notification.php" dialect="GenericSQL" />
   </component>
 </project>

@@ -23,7 +23,7 @@ $updateStmt->execute();
 $updateStmt->close();
 ?>
 
-<div class="container mt-5 pt-5">
+<div class="container mt-5 pt-5 mb-100 " style="height: 80vh" >
     <h2 class="text-light mb-4">Your Notifications</h2>
     <div class="list-group">
         <?php 
