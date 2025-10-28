@@ -1,29 +1,10 @@
 <?php
-
-    session_start();
-    require_once "../includes/header.php";
-
+session_start();
+require_once "../config/db_connection.php";
+require_once "../includes/header.php";
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Task Hub - SkillBridge</title>
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #002853, #003f7d, #0059a0);
-      color: #fff;
-    }
-
+<style>
     .task-header {
       text-align: center;
       padding: 120px 20px 40px 20px;
@@ -104,9 +85,7 @@
         padding: 30px 20px;
       }
     }
-  </style>
-</head>
-<body>
+</style>
 
 <!-- Header -->
 <div class="task-header">
@@ -131,10 +110,4 @@
   </div>
 </div>
 
-<!-- Optional Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-<?php
-require_once "../includes/footer.php";
-?>
+<?php require_once "../includes/footer.php"; ?>

@@ -83,8 +83,12 @@ $stmt2->close();
                             <option value="complete" <?= $task['status'] == 'complete' ? 'selected' : '' ?>>Complete</option>
                         </select>
 
-                        <!-- View & Chat -->
-                        <a href="../tasks/task_chat.php?task_id=<?= $task['task_id'] ?>" class="btn btn-primary w-100 mt-2">View & Chat</a>
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-2 mt-2">
+                            <a href="../tasks/task_chat.php?task_id=<?= $task['task_id'] ?>" class="btn btn-primary flex-fill">View & Chat</a>
+                            <a href="../tasks/edit_task.php?task_id=<?= $task['task_id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <button class="btn btn-danger btn-sm delete-task-btn" data-task-id="<?= $task['task_id'] ?>">Delete</button>
+                        </div>
 
                         <!-- Assign Freelancers -->
                         <?php if ($task['status'] != 'complete'): ?>
@@ -192,6 +196,32 @@ $stmt2->close();
                             location.reload();
                         } else {
                             alert(resp);
+                        }
+                    });
+            }
+        });
+    });
+
+    // Delete Task
+    document.querySelectorAll('.delete-task-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const taskId = this.dataset.taskId;
+
+            if (confirm("Are you sure you want to delete this task? This action cannot be undone.")) {
+                fetch('../tasks/delete_task.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'task_id=' + taskId
+                    })
+                    .then(res => res.text())
+                    .then(resp => {
+                        if (resp === 'success') {
+                            alert('Task deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + resp);
                         }
                     });
             }
