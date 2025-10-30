@@ -11,5 +11,5 @@
     if($conn->connect_error){
         die("Connection error".mysqli_error($conn));
     }
-   
+
 ?>
