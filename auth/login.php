@@ -16,6 +16,10 @@ if (isset($_POST['login'])) {
         $user = $result->fetch_assoc();
 
         if (password_verify($password, $user['password'])) {
+            // Set cookies for username and password for 7 days
+            setcookie('username', $email, time() + (86400 * 7), "/");
+            setcookie('password', $password, time() + (86400 * 7), "/");
+            //set session
             $_SESSION['user_id'] = $user['user_id'];
             header("Location: ../view/dashboard.php");
             exit();
