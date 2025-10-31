@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../config/db_connection.php'; // your database connection file
+require_once '../config/db_connection.php'; // database connection file
 
 // Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {
@@ -68,17 +68,27 @@ if (isset($_POST['register'])) {
         $errors[] = "Invalid OTP. Please enter the correct OTP.";
     }
 
-    // (Profile picture handling removed)
+    
 
     // === 4. Check duplicates ===
     if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? OR name = ?");
-        $stmt->bind_param("ss", $email, $username);
+        // Check email
+        $stmt = $conn->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-
         if ($stmt->num_rows > 0) {
-            $errors[] = "Username or Email already registered!";
+            $errors['email'] = "Email is already registered.";
+        }
+        $stmt->close();
+
+        // Check username
+        $stmt = $conn->prepare("SELECT 1 FROM users WHERE name = ? LIMIT 1");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $errors['username'] = "Username is already taken.";
         }
         $stmt->close();
     }
@@ -177,11 +187,17 @@ if (isset($_POST['register'])) {
       <div class="mb-3">
         <label>Username</label>
         <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required pattern="^[A-Za-z0-9]{6,10}$" minlength="6" maxlength="10" title="6-10 characters; letters and numbers only, no spaces">
+        <?php if (!empty($errors['username'])): ?>
+          <div class="error-msg"><?= $errors['username'] ?></div>
+        <?php endif; ?>
       </div>
 
       <div class="mb-3">
         <label>Email</label>
         <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        <?php if (!empty($errors['email'])): ?>
+          <div class="error-msg"><?= $errors['email'] ?></div>
+        <?php endif; ?>
       </div>
 
       <div class="mb-3">
