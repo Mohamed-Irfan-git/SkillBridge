@@ -136,7 +136,7 @@ $stmt->close();
 }
 </style>
 
-<div class="container py-5">
+<div class="container py-5" style="margin-top: 50px">
     <h2 class="text-center mb-4">Available Tasks</h2>
 
     <!-- Search bar -->
