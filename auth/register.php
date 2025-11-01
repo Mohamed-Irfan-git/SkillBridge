@@ -1,11 +1,17 @@
 <?php
 session_start();
-require_once '../config/db_connection.php'; // your database connection file
+require_once '../config/db_connection.php'; // database connection file
 
 // Generate CSRF token
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+
+// Generate/Set OTP (always 1234 for testing)
+if (empty($_SESSION['otp'])) {
+    $_SESSION['otp'] = '1234';
+}
+$display_otp = $_SESSION['otp'];
 
 if (isset($_POST['register'])) {
     // === 1. Collect input ===
@@ -16,6 +22,7 @@ if (isset($_POST['register'])) {
     $role = $_POST['role'];
     $bio = trim($_POST['bio']);
     $csrf_token = $_POST['csrf_token'];
+    $otp = trim($_POST['otp'] ?? '');
 
     $errors = [];
 
@@ -54,17 +61,34 @@ if (isset($_POST['register'])) {
         $errors[] = "Invalid role selected.";
     }
 
-    // (Profile picture handling removed)
+    // OTP validation
+    if (empty($otp)) {
+        $errors[] = "OTP is required.";
+    } elseif ($otp !== $_SESSION['otp']) {
+        $errors[] = "Invalid OTP. Please enter the correct OTP.";
+    }
+
+    
 
     // === 4. Check duplicates ===
     if (empty($errors)) {
-        $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = ? OR name = ?");
-        $stmt->bind_param("ss", $email, $username);
+        // Check email
+        $stmt = $conn->prepare("SELECT 1 FROM users WHERE email = ? LIMIT 1");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-
         if ($stmt->num_rows > 0) {
-            $errors[] = "Username or Email already registered!";
+            $errors['email'] = "Email is already registered.";
+        }
+        $stmt->close();
+
+        // Check username
+        $stmt = $conn->prepare("SELECT 1 FROM users WHERE name = ? LIMIT 1");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows > 0) {
+            $errors['username'] = "Username is already taken.";
         }
         $stmt->close();
     }
@@ -143,6 +167,8 @@ if (isset($_POST['register'])) {
     }
     .error-msg { color: #ff4d4f; text-align: center; }
     .success-msg { color: #00ff99; text-align: center; }
+    .otp-tools { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+    .otp-timer { color: #00bfff; font-size: 0.9rem; }
   </style>
 </head>
 
@@ -161,11 +187,17 @@ if (isset($_POST['register'])) {
       <div class="mb-3">
         <label>Username</label>
         <input type="text" name="username" class="form-control" value="<?= htmlspecialchars($_POST['username'] ?? '') ?>" required pattern="^[A-Za-z0-9]{6,10}$" minlength="6" maxlength="10" title="6-10 characters; letters and numbers only, no spaces">
+        <?php if (!empty($errors['username'])): ?>
+          <div class="error-msg"><?= $errors['username'] ?></div>
+        <?php endif; ?>
       </div>
 
       <div class="mb-3">
         <label>Email</label>
         <input type="email" name="email" class="form-control" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        <?php if (!empty($errors['email'])): ?>
+          <div class="error-msg"><?= $errors['email'] ?></div>
+        <?php endif; ?>
       </div>
 
       <div class="mb-3">
@@ -194,6 +226,15 @@ if (isset($_POST['register'])) {
         <textarea name="bio" class="form-control" rows="3"><?= htmlspecialchars($_POST['bio'] ?? '') ?></textarea>
       </div>
 
+      <div class="mb-3">
+        <label>OTP (Enter: <?= $display_otp ?>)</label>
+        <input type="text" name="otp" class="form-control" placeholder="Enter OTP" required maxlength="4" pattern="[0-9]{4}" title="Enter 4-digit OTP">
+        <div class="otp-tools">
+          <button type="button" id="sendOtpBtn" class="btn btn-outline-info btn-sm">Send OTP</button>
+          <span id="otpTimer" class="otp-timer"></span>
+        </div>
+      </div>
+
       <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
       <button type="submit" name="register" class="btn btn-primary mt-2">Register</button>
@@ -203,5 +244,44 @@ if (isset($_POST['register'])) {
       </div>
     </form>
   </div>
+  <script>
+    (function() {
+      const sendBtn = document.getElementById('sendOtpBtn');
+      const timerEl = document.getElementById('otpTimer');
+      let countdownInterval = null;
+
+      function formatTime(seconds) {
+        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+        const s = String(seconds % 60).padStart(2, '0');
+        return m + ':' + s;
+      }
+
+      function startCountdown(duration) {
+        let remaining = duration;
+        timerEl.textContent = 'Time remaining: ' + formatTime(remaining);
+        countdownInterval = setInterval(function() {
+          remaining -= 1;
+          if (remaining <= 0) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            timerEl.textContent = '';
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Resend OTP';
+            return;
+          }
+          timerEl.textContent = 'Time remaining: ' + formatTime(remaining);
+        }, 1000);
+      }
+
+      if (sendBtn) {
+        sendBtn.addEventListener('click', function() {
+          // Fake send - just show a message and start timer
+          sendBtn.disabled = true;
+          sendBtn.textContent = 'OTP Sent';
+          startCountdown(60); // 60 seconds cooldown
+        });
+      }
+    })();
+  </script>
 </body>
 </html>
