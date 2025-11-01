@@ -31,18 +31,18 @@ if (isset($_POST['create_task'])) {
         if (move_uploaded_file($_FILES['task_photo']['tmp_name'], $target_file)) {
             $photo_path = $file_name;
         } else {
-            $error = "Failed to upload photo.";
+            $error = "❌ Failed to upload photo.";
         }
     }
 
     if (!$error) {
-        $stmt = $conn->prepare("INSERT INTO tasks (user_id, title, description, skill_required, deadline) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("issss", $user_id, $title, $description, $skill_required, $deadline);
+        $stmt = $conn->prepare("INSERT INTO tasks (user_id, title, description, skill_required, deadline, photo) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssss", $user_id, $title, $description, $skill_required, $deadline, $photo_path);
 
         if ($stmt->execute()) {
-            $success = "Task created successfully!";
+            $success = "✅ Task created successfully!";
         } else {
-            $error = "Failed to create task. Try again.";
+            $error = "❌ Failed to create task. Try again.";
         }
         $stmt->close();
     }
@@ -51,10 +51,9 @@ if (isset($_POST['create_task'])) {
 $conn->close();
 ?>
 
-<!-- Main Content -->
-<div class="container" style="max-width:600px; margin-top:120px;">
-    <div class="login-card p-4" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); border-radius: 15px; box-shadow:0 8px 20px rgba(0,0,0,0.3);">
-        <h2 class="text-center mb-4" style="font-family:'Poppins', serif; color:#00bfff; text-shadow:0 0 10px rgba(0,191,255,0.5);">Create Task</h2>
+<div class="container" style="margin-top:80px; max-width:800px; margin-bottom: 40px">
+    <div class="task-card p-5">
+        <h2 class="text-center mb-4">📌 Post a Task</h2>
 
         <?php if($error): ?>
             <div class="alert alert-danger text-center"><?php echo $error; ?></div>
@@ -63,53 +62,119 @@ $conn->close();
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label text-light">Title</label>
-                <input type="text" name="title" class="form-control" placeholder="Task Title" required>
+            <!-- TASK TITLE -->
+            <div class="mb-4">
+                <label class="form-label">Task Title</label>
+                <input type="text" name="title" class="form-control" placeholder="e.g., Build a WordPress Website" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Description</label>
-                <textarea name="description" class="form-control" rows="5" placeholder="Describe your task..." required></textarea>
+            <!-- DESCRIPTION -->
+            <div class="mb-4">
+                <label class="form-label">Task Description</label>
+                <textarea name="description" class="form-control" rows="6" placeholder="Provide detailed requirements..." required></textarea>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Skill Required</label>
-                <input type="text" name="skill_required" class="form-control" placeholder="e.g., Web Development, Design" required>
+            <!-- SKILL REQUIRED -->
+            <div class="mb-4">
+                <label class="form-label">Skills Required</label>
+                <input type="text" name="skill_required" class="form-control" placeholder="e.g., Web Development, Photoshop" required>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Deadline</label>
-                <input type="date" name="deadline" class="form-control" required>
+            <!-- DEADLINE & FILE UPLOAD -->
+            <div class="row mb-4 g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Deadline</label>
+                    <input type="date" name="deadline" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Attach File (optional)</label>
+                    <input type="file" name="task_photo" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    <div class="mt-2 text-center">
+                        <img id="photoPreview" src="#" alt="Preview" style="max-width:180px; display:none; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+                    </div>
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label text-light">Attach Photo (optional)</label>
-                <input type="file" name="task_photo" class="form-control" accept="image/*">
-            </div>
-
-            <button type="submit" name="create_task" class="btn btn-primary w-100" style="background: linear-gradient(90deg, #00c6ff, #0072ff); border:none; padding:10px; font-weight:500; border-radius:8px; box-shadow:0 0 10px rgba(0,212,255,0.3); transition:0.3s;">Create Task</button>
+            <button type="submit" name="create_task" class="btn btn-gradient w-100">
+                <i class="fas fa-paper-plane me-2"></i> Post Task
+            </button>
         </form>
     </div>
 </div>
 
 <style>
-/* Matching previous form style */
-.login-card .form-control {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #fff;
-    border-radius: 8px;
-    padding: 10px;
-    transition: 0.3s;
-}
+    .task-card {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        padding: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .task-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
 
-.login-card .form-control:focus {
-    border-color: #00bfff;
-    box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
-    background: rgba(255, 255, 255, 0.25);
-    outline: none;
-}
+    /* Form Inputs */
+    .task-card .form-control {
+        background: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .task-card .form-control:focus {
+        border-color: #00bfff;
+        box-shadow: 0 0 10px rgba(0,191,255,0.3);
+        outline: none;
+        background: #fff;
+    }
+
+    /* Labels */
+    .task-card .form-label {
+        font-weight: 500;
+        font-size: 0.95rem;
+        color: #333;
+    }
+
+    /* Placeholder color */
+    .task-card ::placeholder {
+        color: #aaa;
+        opacity: 1;
+    }
+
+    /* Gradient Button */
+    .btn-gradient {
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        border: none;
+        padding: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #fff;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 20px rgba(0,112,255,0.3);
+    }
+    .btn-gradient:hover {
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        box-shadow: 0 8px 25px rgba(0,112,255,0.5);
+    }
 </style>
+
+<script>
+    function previewImage(event){
+        const input = event.target;
+        const preview = document.getElementById('photoPreview');
+        if(input.files && input.files[0]){
+            const reader = new FileReader();
+            reader.onload = function(e){
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 
 <?php require_once '../includes/footer.php'; ?>

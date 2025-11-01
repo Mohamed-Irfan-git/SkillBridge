@@ -1,7 +1,6 @@
 <?php
 session_start();
-
-require_once '../config/db_connection.php'; 
+require_once '../config/db_connection.php';
 
 $errors = [];
 
@@ -9,7 +8,7 @@ if (isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Basic validations similar to register page
+    // Basic validation
     if (empty($email)) {
         $errors['email'] = 'Email is required.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -18,8 +17,6 @@ if (isset($_POST['login'])) {
 
     if (empty($password)) {
         $errors['password'] = 'Password is required.';
-    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{6,}$/', $password)) {
-        $errors['password'] = 'Must include uppercase, lowercase, number, and special character.';
     }
 
     if (empty($errors)) {
@@ -30,12 +27,7 @@ if (isset($_POST['login'])) {
 
         if ($result && $result->num_rows === 1) {
             $user = $result->fetch_assoc();
-
             if (password_verify($password, $user['password'])) {
-                // Set cookies for username and password for 7 days
-                setcookie('username', $email, time() + (86400 * 7), "/");
-                setcookie('password', $password, time() + (86400 * 7), "/");
-                //set session
                 $_SESSION['user_id'] = $user['user_id'];
                 header("Location: ../view/dashboard.php");
                 exit();
@@ -56,103 +48,104 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkillBridge Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillBridge Login</title>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e6f7ee, #b8f2d9);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-  <style>
-    body {
-      height: 100vh;
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #002853, #004f8c);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-    }
+        .login-box {
+            width: 420px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            color: #333;
+        }
 
-    .login-card {
-      width: 400px;
-      background: rgba(0,0,0,0.25);
-      padding: 35px;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
+        .login-box h3 {
+            font-family: 'Pacifico', cursive;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #28a745;
+        }
 
-    .login-card h2 {
-      text-align: center;
-      font-family: 'Pacifico', cursive;
-      font-size: 36px;
-      margin-bottom: 20px;
-      color: #00bfff;
-      text-shadow: 0 0 8px rgba(0,191,255,0.5);
-    }
+        .form-control {
+            border-radius: 8px;
+        }
 
-    .form-label {
-      font-weight: 500;
-      color: #e6e6e6;
-    }
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(90deg, #28a745, #198754);
+            border: none;
+            font-weight: 600;
+        }
 
-    .form-control {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      color: white;
-    }
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #198754, #28a745);
+        }
 
-    .form-control:focus {
-      box-shadow: 0 0 10px rgba(0,191,255,0.5);
-    }
+        .error-msg { color: #ff4d4f; margin-top: 6px; font-size: 0.875rem; }
 
-    .btn-primary {
-      width: 100%;
-      background: linear-gradient(90deg, #00bfff, #0072ff);
-      border: none;
-    }
+        a.text-info {
+            color: #28a745;
+            text-decoration: none;
+        }
 
-    .btn-primary:hover {
-      background: linear-gradient(90deg, #0072ff, #00bfff);
-    }
+        a.text-info:hover {
+            color: #198754;
+            text-decoration: underline;
+        }
 
-    .error-msg { color: #ff4d4f; margin-top: 6px; font-size: 0.875rem; }
-  </style>
+        @media (max-width: 480px) {
+            .login-box { width: 90%; padding: 25px; }
+        }
+    </style>
 </head>
+
 <body>
-  <div class="login-card">
-    <h2>Welcome Back</h2>
+<div class="login-box">
+    <h3>SkillBridge Login</h3>
     <form action="" method="post">
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" id="email" name="email" class="form-control" placeholder="email@example.com" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
-        <?php if (!empty($errors['email'])): ?>
-          <div class="error-msg"><?= $errors['email'] ?></div>
-        <?php endif; ?>
-      </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="email@example.com" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+            <?php if (!empty($errors['email'])): ?>
+                <div class="error-msg"><?= $errors['email'] ?></div>
+            <?php endif; ?>
+        </div>
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{6,}$" title="At least 6 chars with uppercase, lowercase, number, and special character">
-        <?php if (!empty($errors['password'])): ?>
-          <div class="error-msg"><?= $errors['password'] ?></div>
-        <?php endif; ?>
-      </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            <?php if (!empty($errors['password'])): ?>
+                <div class="error-msg"><?= $errors['password'] ?></div>
+            <?php endif; ?>
+        </div>
 
-      <div class="d-grid">
-        <button type="submit" name="login" class="btn btn-primary">Login</button>
-      </div>
+        <div class="d-grid">
+            <button type="submit" name="login" class="btn btn-primary">Login</button>
+        </div>
 
-      <div class="text-center mt-3">
-        <small>Don't have an account? <a href="./register.php">Register here</a></small>
-      </div>
+        <div class="text-center mt-3">
+            <small>Don't have an account? <a href="./register.php" class="text-info">Register here</a></small>
+        </div>
     </form>
-  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
