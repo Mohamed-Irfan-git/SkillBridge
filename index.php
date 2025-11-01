@@ -1,6 +1,14 @@
 <?php
 session_start();
+require_once 'config/db_connection.php';
 require_once 'includes/header.php';
+
+// Fetch reviews
+$reviews_query = "SELECT r.*, u.name FROM reviews r 
+                 JOIN users u ON r.user_id = u.user_id 
+                 ORDER BY r.created_at DESC 
+                 LIMIT 6";
+$reviews_result = $conn->query($reviews_query);
 ?>
 
 <!-- Hero Section -->
@@ -39,6 +47,10 @@ require_once 'includes/header.php';
     </div>
 </section>
 
+ 
+</section>
+
 <?php
+$conn->close();
 require_once './includes/footer.php';
 ?>

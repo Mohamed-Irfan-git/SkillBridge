@@ -78,6 +78,31 @@ $conn->close();
       color: white;
     }
 
+      /* Navbar */
+    .navbar {
+      background: linear-gradient(135deg, #002853, #003f7d, #0059a0);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .navbar-brand {
+      font-family: 'Paoppins', cursive;
+      color: #00bfff !important;
+      font-size: 1.8rem;
+    }
+
+    .nav-link {
+      color: #e0e0e0 !important;
+      font-weight: 500;
+      margin-right: 40px;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .nav-link:hover {
+      color: #00bfff !important;
+      text-shadow: 0 0 5px rgba(0,191,255,0.5);
+    }
+
     .login-card {
       width: 400px;
       background: rgba(0,0,0,0.25);
@@ -124,6 +149,22 @@ $conn->close();
   </style>
 </head>
 <body>
+
+    <!-- Navbar -->
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="../index.php">SkillBridge</a>
+    <button class="btn d-lg-none" id="menuBtn">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center">
+      <li class="nav-item">
+        <a class="nav-link" href="/SkillBridge/index.php">Home</a>
+      </li>
+      
+  </div>
+</nav>
+
   <div class="login-card">
     <h2>Welcome Back</h2>
     <form action="" method="post">

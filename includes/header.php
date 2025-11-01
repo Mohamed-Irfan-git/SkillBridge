@@ -1,6 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 global $conn;
-session_start();
 
 require_once __DIR__ . '/../config/db_connection.php';
 
@@ -152,13 +154,16 @@ $notification_count = 0;
     </button>
     <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center">
       <li class="nav-item">
-        <a class="nav-link" href="../index.php">Home</a>
+        <a class="nav-link" href="/SkillBridge/index.php">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="../tasks/tasks.php">Tasks</a>
+        <a class="nav-link" href="/SkillBridge/tasks/tasks.php">Tasks</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/SkillBridge/reviews/add_review.php">Reviews</a>
       </li>
       <li class="nav-item position-relative">
-        <a class="nav-link" href="../view/notification.php">
+        <a class="nav-link" href="/SkillBridge/view/notification.php">
           Notifications
           <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
             <span class="badge position-absolute top-0 start-100 translate-middle">
@@ -169,14 +174,14 @@ $notification_count = 0;
       </li>
       <?php if(isset($_SESSION['user_id'])): ?>
       <li class="nav-item">
-        <a class="nav-link" href="../view/dashboard.php">Dashboard</a>
+        <a class="nav-link" href="/SkillBridge/view/dashboard.php">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-desktop ms-3" href="../auth/logout.php">Logout</a>
+        <a class="btn btn-desktop ms-3" href="/SkillBridge/auth/logout.php">Logout</a>
       </li>
       <?php else: ?>
       <li class="nav-item">
-        <a class="btn btn-desktop ms-3" href="../auth/login.php">Login</a>
+        <a class="btn btn-desktop ms-3" href="/SkillBridge/auth/login.php">Login</a>
       </li>
       <?php endif; ?>
     </ul>
@@ -187,6 +192,7 @@ $notification_count = 0;
 <div id="mobileMenu">
   <a href="../index.php">Home</a>
   <a href="../tasks/tasks.php">Tasks</a>
+  <a href="../reviews/add_review.php">Reviews</a>
   <a href="../view/notification.php">
     Notifications
     <?php if(isset($_SESSION['user_id']) && $notification_count > 0): ?>
