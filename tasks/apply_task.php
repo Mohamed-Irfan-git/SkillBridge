@@ -7,12 +7,6 @@ if(isset($_POST['task_id']) && isset($_SESSION['user_id'])){
     $task_id = (int)$_POST['task_id'];
     $freelancer_id = $_SESSION['user_id'];
 
-    // Insert application
-    $stmt = $conn->prepare("INSERT INTO applications(task_id, freelancer_id) VALUES(?, ?)");
-    $stmt->bind_param("ii", $task_id, $freelancer_id);
-    $stmt->execute();
-    $stmt->close();
-
     // Get the task creator ID
     $taskStmt = $conn->prepare("SELECT user_id FROM tasks WHERE task_id = ?");
     $taskStmt->bind_param("i", $task_id);
@@ -21,6 +15,37 @@ if(isset($_POST['task_id']) && isset($_SESSION['user_id'])){
     $task = $result->fetch_assoc();
     $creator_id = $task['user_id'] ?? null;
     $taskStmt->close();
+
+    if(!$creator_id){
+        // Task not found
+        header("Location: ./view_task.php?applied=0&error=TaskNotFound");
+        exit;
+    }
+
+    // Prevent creator from applying
+    if($creator_id == $freelancer_id){
+        header("Location: ./view_task.php?applied=0&error=CannotApplyOwnTask");
+        exit;
+    }
+
+    // Check if user has already applied 2 times for this task
+    $checkStmt = $conn->prepare("SELECT COUNT(*) AS apply_count FROM applications WHERE task_id = ? AND freelancer_id = ?");
+    $checkStmt->bind_param("ii", $task_id, $freelancer_id);
+    $checkStmt->execute();
+    $checkResult = $checkStmt->get_result()->fetch_assoc();
+    $apply_count = $checkResult['apply_count'] ?? 0;
+    $checkStmt->close();
+
+    if($apply_count >= 2){
+        header("Location: ./view_task.php?applied=0&error=MaxApplicationsReached");
+        exit;
+    }
+
+    // Insert application
+    $stmt = $conn->prepare("INSERT INTO applications(task_id, freelancer_id) VALUES(?, ?)");
+    $stmt->bind_param("ii", $task_id, $freelancer_id);
+    $stmt->execute();
+    $stmt->close();
 
     // Get freelancer name
     $userStmt = $conn->prepare("SELECT name FROM users WHERE user_id = ?");
@@ -42,6 +67,10 @@ if(isset($_POST['task_id']) && isset($_SESSION['user_id'])){
 
     // Redirect back with a success flag
     header("Location: ./view_task.php?applied=1");
+    exit;
+} else {
+    // Invalid request
+    header("Location: ./view_task.php?applied=0&error=InvalidRequest");
     exit;
 }
 ?>

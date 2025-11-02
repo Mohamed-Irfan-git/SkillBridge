@@ -28,121 +28,42 @@ $stmt->close();
 ?>
 
 <style>
+    /* -------------------- Body & Fonts -------------------- */
     body {
         margin: 0;
         font-family: 'Poppins', sans-serif;
-        background: #f7f9fb;
-        color: #333;
-    }
-
-    /* Navbar (Dashboard Header Style) */
-    .navbar {
-        background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        padding: 0.9rem 1rem;
-    }
-
-    .navbar-brand {
-        font-weight: 700;
-        font-size: 1.8rem;
-        color: #00b074 !important;
-    }
-
-    .nav-link {
-        color: #333 !important;
-        font-weight: 500;
-        margin-right: 25px;
-        position: relative;
-        transition: 0.3s ease;
-    }
-
-    .nav-link:hover {
-        color: #00b074 !important;
-    }
-
-    .nav-link::after {
-        content: '';
-        position: absolute;
-        bottom: -4px;
-        left: 0;
-        width: 0%;
-        height: 2px;
-        background: #00b074;
-        transition: 0.3s ease;
-    }
-
-    .nav-link:hover::after {
-        width: 100%;
-    }
-
-    /* Notification Icon */
-    .notification-icon {
-        position: relative;
-    }
-
-    .notification-icon i {
-        font-size: 1.3rem;
-        color: #333;
-        transition: color 0.3s;
-    }
-
-    .notification-badge {
-        position: absolute;
-        top: -6px;
-        right: -10px;
-        background: #ff3b3b;
+        background: #0A0E27;
         color: #fff;
-        border-radius: 50%;
-        padding: 3px 6px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        border: 2px solid #fff;
-        box-shadow: 0 0 6px rgba(0,0,0,0.2);
-        animation: pulse 1.5s infinite;
     }
 
-    @keyframes pulse {
-        0% { box-shadow: 0 0 0 0 rgba(255,59,59,0.4); }
-        70% { box-shadow: 0 0 0 6px rgba(255,59,59,0); }
-        100% { box-shadow: 0 0 0 0 rgba(255,59,59,0); }
+    /* -------------------- Container -------------------- */
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
     }
 
-    /* Green Dashboard Button */
-    .btn-desktop {
-        background-color: #00b074 !important;
-        color: #fff !important;
-        font-weight: 600;
-        border-radius: 25px;
-        padding: 8px 22px;
-        border: none !important;
-        box-shadow: 0 4px 10px rgba(0,176,116,0.25);
-        transition: all 0.3s ease;
-    }
-
-    .btn-desktop:hover {
-        background-color: #009e68 !important;
-        box-shadow: 0 6px 20px rgba(0,176,116,0.35);
-        color: #fff !important;
-    }
-
-    /* Tasks Header */
+    /* -------------------- Header -------------------- */
     .task-list-header {
         text-align: center;
-        padding: 100px 20px 40px;
+        padding: 100px 20px 50px;
     }
 
     .task-list-header h2 {
         font-size: 3rem;
-        color: #00b074;
-        text-shadow: 0 0 12px rgba(0,176,116,0.5);
+        background: linear-gradient(90deg, #00b074, #00d4ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 800;
     }
 
     .task-list-header p {
         font-size: 1.15rem;
-        color: #555;
+        color: #bbb;
+        margin-top: 8px;
     }
 
-    /* Search Bar */
+    /* -------------------- Search -------------------- */
     .search-bar {
         max-width: 550px;
         margin: 0 auto 50px;
@@ -150,7 +71,13 @@ $stmt->close();
 
     .input-group .form-control {
         border-radius: 14px 0 0 14px;
-        border: 1px solid #ccc;
+        border: 1px solid #444;
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+    }
+
+    .input-group .form-control::placeholder {
+        color: #aaa;
     }
 
     .input-group .btn-primary {
@@ -164,39 +91,71 @@ $stmt->close();
         background-color: #00c6ff;
     }
 
-    /* Task Cards */
+    /* -------------------- Task Card -------------------- */
+    .row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        padding-bottom: 80px;
+    }
+
     .task-card {
-        background: #fff;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
         border-radius: 20px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         padding: 30px;
         transition: all 0.3s ease;
-        height: 100%;
+        cursor: pointer;
+        position: relative;
     }
 
     .task-card:hover {
         transform: translateY(-6px);
-        box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
     }
 
+    /* Task Icon */
+    .task-icon {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 20px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #00b074, #00d4ff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #fff;
+        box-shadow: 0 8px 25px rgba(0, 176, 116, 0.3);
+        transition: transform 0.3s;
+    }
+
+    .task-card:hover .task-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Task Title & Meta */
     .task-card h3 {
-        color: #00b074;
+        font-size: 1.5rem;
         font-weight: 700;
+        color: #00b074;
         margin-bottom: 12px;
     }
 
     .task-card p, .task-card .meta {
-        color: #555;
+        color: #ccc;
+        margin-bottom: 6px;
     }
 
-    /* Task Buttons */
+    /* -------------------- Buttons -------------------- */
     .btn-custom {
         width: 100%;
         font-weight: 600;
         border: none;
-        padding: 10px;
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 50px;
         margin-bottom: 6px;
+        transition: all 0.3s ease;
     }
 
     .btn-success {
@@ -206,6 +165,7 @@ $stmt->close();
 
     .btn-success:hover {
         background: linear-gradient(90deg, #00bfff, #00ff99);
+        transform: translateY(-2px);
     }
 
     .btn-info {
@@ -215,12 +175,40 @@ $stmt->close();
 
     .btn-info:hover {
         background: linear-gradient(90deg, #00c6ff, #0072ff);
+        transform: translateY(-2px);
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .task-list-header h2 { font-size: 2.2rem; }
-        .task-card { padding: 25px 20px; }
+    /* -------------------- Chat Modal -------------------- */
+    /* -------------------- Chat Modal -------------------- */
+    .modal-content {
+        border-radius: 20px;
+        overflow: visible;
+        background: #f9f9f9; /* soft white */
+        color: #333;
+        padding: 0;
+    }
+
+    .chat-header {
+        background: #e3e3e3; /* soft gray */
+        color: #333;
+        font-weight: 600;
+        font-size: 1.2rem;
+        padding: 16px 24px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-box {
+        background: #fff;
+        padding: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
     }
 
     .chat-message {
@@ -232,17 +220,54 @@ $stmt->close();
     }
 
     .sender {
-        background: linear-gradient(90deg, #00b074, #00d4ff);
-        color: #fff;
+        background: #d1f0ff; /* light blue */
+        color: #000;
         align-self: flex-end;
         border-bottom-right-radius: 0;
     }
 
     .receiver {
-        background: #e0e0e0;
+        background: #f0f0f0; /* light gray */
         color: #333;
         align-self: flex-start;
         border-bottom-left-radius: 0;
+    }
+
+    .chat-input {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        background: #f9f9f9;
+        border-top: 1px solid #ddd;
+    }
+
+    .chat-input textarea {
+        flex: 1;
+        border-radius: 30px;
+        padding: 10px 15px;
+        height: 45px;
+        border: 1px solid #ccc;
+        outline: none;
+        background: #fff;
+        color: #333;
+        resize: none;
+    }
+
+    .chat-input button {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #b0d4ff; /* soft blue */
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        transition: background 0.3s ease;
+    }
+
+    .chat-input button:hover {
+        background: #80bfff; /* darker soft blue on hover */
     }
 
     /* Scrollbar for chat */
@@ -257,6 +282,14 @@ $stmt->close();
     .chat-box::-webkit-scrollbar-thumb {
         background-color: rgba(0,0,0,0.2);
         border-radius: 3px;
+    }
+
+
+    /* -------------------- Responsive -------------------- */
+    @media (max-width: 768px) {
+        .task-list-header h2 { font-size: 2.2rem; }
+        .task-card { padding: 25px 20px; }
+        .chat-box { max-height: 300px; }
     }
 </style>
 
@@ -278,64 +311,49 @@ $stmt->close();
     <div class="row">
         <?php if($tasks): ?>
             <?php foreach($tasks as $task): ?>
-                <div class="col-md-6 mb-4">
-                    <div class="task-card">
-                        <h3><i class="fas fa-briefcase"></i> <?php echo htmlspecialchars($task['title']); ?></h3>
-                        <p><?php echo htmlspecialchars(substr($task['description'], 0, 100)); ?>...</p>
-                        <div class="meta"><i class="fas fa-tools"></i> Skill: <?php echo htmlspecialchars($task['skill_required']); ?></div>
-                        <div class="meta"><i class="fas fa-clock"></i> Deadline: <?php echo htmlspecialchars($task['deadline']); ?></div>
-                        <div class="meta"><i class="fas fa-user"></i> Creator: <?php echo htmlspecialchars($task['creator_name']); ?></div>
+                <div class="task-card">
+                    <div class="task-icon"><i class="fas fa-briefcase"></i></div>
+                    <h3><?php echo htmlspecialchars($task['title']); ?></h3>
+                    <p><?php echo htmlspecialchars(substr($task['description'], 0, 100)); ?>...</p>
+                    <div class="meta">Skill: <?php echo htmlspecialchars($task['skill_required']); ?></div>
+                    <div class="meta">Deadline: <?php echo htmlspecialchars($task['deadline']); ?></div>
+                    <div class="meta">Creator: <?php echo htmlspecialchars($task['creator_name']); ?></div>
 
-                        <div class="mt-3 d-flex flex-column gap-2">
-                            <button class="btn btn-success btn-custom" data-bs-toggle="modal"
-                                    data-bs-target="#chatModal<?php echo $task['task_id']; ?>">
-                                <i class="fas fa-comments"></i> View & Chat
+                    <div class="mt-3 d-flex flex-column gap-2">
+                        <button class="btn btn-success btn-custom" data-bs-toggle="modal"
+                                data-bs-target="#chatModal<?php echo $task['task_id']; ?>">
+                            <i class="fas fa-comments"></i> View & Chat
+                        </button>
+                        <form method="POST" action="apply_task.php">
+                            <input type="hidden" name="task_id" value="<?php echo $task['task_id']; ?>">
+                            <button type="submit" class="btn btn-info btn-custom">
+                                <i class="fas fa-paper-plane"></i> Apply for Task
                             </button>
-                            <form method="POST" action="apply_task.php">
-                                <input type="hidden" name="task_id" value="<?php echo $task['task_id']; ?>">
-                                <button type="submit" class="btn btn-info btn-custom">
-                                    <i class="fas fa-paper-plane"></i> Apply for Task
-                                </button>
-                            </form>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
                 <!-- Chat Modal -->
                 <div class="modal fade" id="chatModal<?php echo $task['task_id']; ?>" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content p-0" style="border-radius:20px; overflow:hidden;">
-                            <!-- Chat Header -->
-                            <div class="chat-header d-flex align-items-center justify-content-between px-4 py-3"
-                                 style="background: linear-gradient(90deg, #00b074, #00d4ff); color:#fff; font-weight:600; font-size:1.2rem;">
-                                <div>
-                                    <i class="fas fa-comments me-2"></i>
-                                    <?php echo htmlspecialchars($task['title']); ?>
-                                </div>
+                        <div class="modal-content">
+                            <div class="chat-header d-flex align-items-center justify-content-between">
+                                <div><i class="fas fa-comments me-2"></i><?php echo htmlspecialchars($task['title']); ?></div>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
-
-                            <!-- Chat Body -->
-                            <div id="chatBox<?php echo $task['task_id']; ?>"
-                                 class="chat-box px-4 py-3"
-                                 style="background:#f7f9fb; height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+                            <div id="chatBox<?php echo $task['task_id']; ?>" class="chat-box">
                                 <div class="text-center text-muted mt-5">Loading messages...</div>
                             </div>
-
-                            <!-- Chat Input -->
-                            <div class="chat-input d-flex align-items-center px-3 py-2" style="background:#e0e0e0; gap:8px;">
-                <textarea id="chatInput<?php echo $task['task_id']; ?>"
-                          placeholder="Type a message..."
-                          style="flex:1; border:none; border-radius:20px; padding:10px 15px; height:42px; resize:none; outline:none;"></textarea>
-                                <button class="btn"
-                                        onclick="sendMessage(<?php echo $task['task_id']; ?>)"
-                                        style="background: linear-gradient(90deg, #00b074, #00d4ff); color:#fff; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <div class="chat-input">
+                                <textarea id="chatInput<?php echo $task['task_id']; ?>" placeholder="Type a message..."></textarea>
+                                <button onclick="sendMessage(<?php echo $task['task_id']; ?>)">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             <?php endforeach; ?>
         <?php else: ?>
             <p class="text-center">No tasks found.</p>

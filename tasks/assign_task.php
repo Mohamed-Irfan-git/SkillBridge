@@ -34,33 +34,35 @@ if (empty($tasks)) {
 ?>
 
 <div class="container my-5">
-    <h2 class="text-center mb-4" style="color:#00b074;">📌 My Assigned Tasks</h2>
+    <h2 class="text-center mb-5 text-success">📌 My Assigned Tasks</h2>
     <div class="row g-4">
         <?php foreach ($tasks as $task): ?>
             <div class="col-md-6 col-lg-4">
-                <div class="card task-card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-success"><?= htmlspecialchars($task['title']); ?></h5>
-                        <p class="card-text task-desc"><?= nl2br(htmlspecialchars($task['description'])); ?></p>
-                        <p class="mb-1"><strong>Skills:</strong> <?= htmlspecialchars($task['skill_required']); ?></p>
-                        <p class="mb-1"><strong>Deadline:</strong> <?= $task['deadline']; ?></p>
-                        <p class="mb-1"><strong>Created By:</strong> <?= htmlspecialchars($task['creator_name']); ?></p>
-                        <p class="mb-1"><strong>Status:</strong>
-                            <?php if ($task['status'] == 'assigned'): ?>
-                                <span class="badge bg-success">Assigned</span>
-                            <?php elseif ($task['status'] == 'completed'): ?>
-                                <span class="badge bg-secondary">Completed</span>
-                            <?php else: ?>
-                                <span class="badge bg-info"><?= ucfirst($task['status']); ?></span>
-                            <?php endif; ?>
-                        </p>
+                <div class="task-card h-100 p-4 d-flex flex-column">
+                    <div class="mb-3 d-flex justify-content-between align-items-start">
+                        <h5 class="task-title"><?= htmlspecialchars($task['title']); ?></h5>
+                        <?php if ($task['status'] == 'assigned'): ?>
+                            <span class="badge bg-success"><?= ucfirst($task['status']); ?></span>
+                        <?php elseif ($task['status'] == 'completed'): ?>
+                            <span class="badge bg-secondary"><?= ucfirst($task['status']); ?></span>
+                        <?php else: ?>
+                            <span class="badge bg-info"><?= ucfirst($task['status']); ?></span>
+                        <?php endif; ?>
+                    </div>
 
-                        <div class="mt-auto d-flex gap-2 flex-wrap">
-                            <?php if ($task['status'] != 'completed'): ?>
-                                <a href="mark_completed.php?task_id=<?= $task['task_id']; ?>" class="btn btn-success flex-fill">Mark Completed</a>
-                            <?php endif; ?>
-                            <a href="view_task.php?task_id=<?= $task['task_id']; ?>" class="btn btn-outline-primary flex-fill">View Details</a>
-                        </div>
+                    <p class="task-desc"><?= nl2br(htmlspecialchars($task['description'])); ?></p>
+
+                    <ul class="list-unstyled mb-3">
+                        <li><strong>Skills:</strong> <?= htmlspecialchars($task['skill_required']); ?></li>
+                        <li><strong>Deadline:</strong> <?= $task['deadline']; ?></li>
+                        <li><strong>Created By:</strong> <?= htmlspecialchars($task['creator_name']); ?></li>
+                    </ul>
+
+                    <div class="mt-auto d-flex gap-2 flex-wrap">
+                        <?php if ($task['status'] != 'completed'): ?>
+                            <a href="mark_completed.php?task_id=<?= $task['task_id']; ?>" class="btn btn-success flex-fill">Mark Completed</a>
+                        <?php endif; ?>
+                        <a href="view_task.php?task_id=<?= $task['task_id']; ?>" class="btn btn-outline-primary flex-fill">View Details</a>
                     </div>
                 </div>
             </div>
@@ -69,31 +71,60 @@ if (empty($tasks)) {
 </div>
 
 <style>
+    /* Task Card */
     .task-card {
         background: #ffffff;
         border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .task-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
     }
+
+    /* Task Title */
     .task-title {
-        font-weight: 600;
+        font-weight: 700;
         color: #00b074;
+        font-size: 1.25rem;
     }
+
+    /* Task Description */
     .task-desc {
         font-size: 0.95rem;
         color: #555;
-        max-height: 60px;
+        min-height: 60px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    /* Badges */
+    .badge {
+        font-weight: 600;
+        text-transform: capitalize;
+        font-size: 0.85rem;
+        padding: 0.35em 0.7em;
+    }
+
+    /* Buttons */
     .btn {
-        border-radius: 10px;
+        border-radius: 12px;
         font-weight: 500;
         transition: all 0.3s ease;
+    }
+    .btn-outline-primary {
+        color: #00b074;
+        border-color: #00b074;
+    }
+    .btn-outline-primary:hover {
+        background: #00b074;
+        color: #fff;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .task-card { padding: 20px; }
     }
 </style>
 

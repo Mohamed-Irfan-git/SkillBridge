@@ -48,5 +48,5 @@ $stmt3->bind_param("i", $task_id);
 $stmt3->execute();
 $stmt3->close();
 
-echo "success";
-
+header("Location: ../tasks/my_task.php");
+exit();

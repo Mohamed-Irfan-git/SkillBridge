@@ -64,13 +64,13 @@
 
         <div class="text-center text-white-50 small">
             <p class="mb-0">&copy; 2025 <strong>SkillBridge</strong>. All rights reserved.
-                Made with <i class="fas fa-heart text-danger"></i> for the community.
+                Made with <i class="fa-solid fa-heart text-danger"></i> for the community.
             </p>
         </div>
     </div>
 </footer>
 
-<!-- ===== Custom Footer CSS ===== -->
+<!-- ===== Footer CSS ===== -->
 <style>
     .footer {
         font-family: 'Poppins', sans-serif;
@@ -101,6 +101,7 @@
         align-items: center;
         margin-right: 8px;
         transition: all 0.3s ease;
+        font-size: 16px;
     }
     .footer .social-icon:hover {
         background-color: white;
@@ -108,3 +109,6 @@
         transform: translateY(-3px);
     }
 </style>
+
+<!-- Font Awesome 6 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>

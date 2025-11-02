@@ -1,6 +1,6 @@
 <?php
     $username = "root";
-    $pass = "";
+    $pass = "Irfan#@123";
     $host = "localhost";
     $db = "skillbridge";
 

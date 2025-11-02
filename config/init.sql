@@ -1,6 +1,7 @@
 -- --------------------------------------------------
 -- Database: skillbridge
 -- --------------------------------------------------
+DROP DATABASE skillbridge;
 CREATE DATABASE IF NOT EXISTS skillbridge;
 USE skillbridge;
 
@@ -11,12 +12,15 @@ CREATE TABLE IF NOT EXISTS users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     email VARCHAR(100) UNIQUE,
+    username VARCHAR(50) UNIQUE,
     password VARCHAR(255),
     role ENUM('student','freelancer','admin') DEFAULT 'freelancer',
     points INT DEFAULT 0,
     profile_pic VARCHAR(255),
-    bio TEXT
-);
+    bio TEXT,
+    paypal_email VARCHAR(100),          -- add this if you want Payment tab
+    bank_account VARCHAR(50)
+    );
 
 -- --------------------------------------------------
 -- Table: skills
@@ -40,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     status ENUM('open','assigned','completed') DEFAULT 'open',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     deadline DATE,
+    photo VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -51,7 +56,7 @@ CREATE TABLE IF NOT EXISTS applications (
     task_id INT,
     freelancer_id INT,
     message TEXT,
-    status ENUM('pending','accepted','rejected') DEFAULT 'pending',
+    status ENUM('pending','accepted','rejected','completed') DEFAULT 'pending',
     applied_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
     FOREIGN KEY (freelancer_id) REFERENCES users(user_id) ON DELETE CASCADE

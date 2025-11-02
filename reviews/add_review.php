@@ -13,6 +13,7 @@ if (isset($_GET['success']) && $_GET['success'] == 1) {
     $error_message = 'Error deleting review. Please try again.';
 }
 
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     $rating = filter_input(INPUT_POST, 'rating', FILTER_VALIDATE_INT);
     $comment = trim($_POST['comment']);
@@ -43,74 +44,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Review - SkillBridge</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body { background: #f8f9fa; }
+        .card { border-radius: 12px; }
         .rating {
             display: flex;
             flex-direction: row-reverse;
-            justify-content: flex-end;
+            justify-content: flex-start;
         }
-        .rating input {
-            display: none;
-        }
+        .rating input { display: none; }
         .rating label {
-            cursor: pointer;
-            width: 40px;
             font-size: 30px;
             color: #ddd;
-            padding: 5px;
+            cursor: pointer;
+            padding: 0 5px;
+            transition: color 0.2s;
         }
-        .rating label:before {
-            content: '★';
-        }
-        .rating input:checked ~ label {
-            color: #ffd700;
-        }
+        .rating label:before { content: '★'; }
         .rating label:hover,
         .rating label:hover ~ label {
             color: #ffd700;
         }
+        .rating input:checked ~ label { color: #ffd700; }
     </style>
 </head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <?php if (isset($_SESSION['user_id'])): ?>
+<body>
+<div class="container mt-5">
+
+    <?php if (isset($_SESSION['user_id'])): ?>
         <div class="row justify-content-center mb-5">
             <div class="col-md-8">
-                <div class="card shadow">
+                <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
                         <h3 class="card-title mb-0">Add Your Review</h3>
                     </div>
                     <div class="card-body">
                         <?php if ($success_message): ?>
-                            <div class="alert alert-success">
-                                <?php echo $success_message; ?>
-                            </div>
+                            <div class="alert alert-success"><?php echo $success_message; ?></div>
                         <?php endif; ?>
-
                         <?php if ($error_message): ?>
-                            <div class="alert alert-danger">
-                                <?php echo $error_message; ?>
-                            </div>
+                            <div class="alert alert-danger"><?php echo $error_message; ?></div>
                         <?php endif; ?>
 
                         <form method="POST" action="">
+                            <!-- Rating Stars -->
                             <div class="mb-4">
                                 <label class="form-label">Rating</label>
-                                <div class="rating mb-3">
-                                    <input type="radio" name="rating" value="5" id="star5">
-                                    <label for="star5"></label>
-                                    <input type="radio" name="rating" value="4" id="star4">
-                                    <label for="star4"></label>
-                                    <input type="radio" name="rating" value="3" id="star3">
-                                    <label for="star3"></label>
-                                    <input type="radio" name="rating" value="2" id="star2">
-                                    <label for="star2"></label>
-                                    <input type="radio" name="rating" value="1" id="star1">
-                                    <label for="star1"></label>
+                                <div class="rating">
+                                    <input type="radio" name="rating" id="star5" value="5">
+                                    <label for="star5" title="5 stars"></label>
+                                    <input type="radio" name="rating" id="star4" value="4">
+                                    <label for="star4" title="4 stars"></label>
+                                    <input type="radio" name="rating" id="star3" value="3">
+                                    <label for="star3" title="3 stars"></label>
+                                    <input type="radio" name="rating" id="star2" value="2">
+                                    <label for="star2" title="2 stars"></label>
+                                    <input type="radio" name="rating" id="star1" value="1">
+                                    <label for="star1" title="1 star"></label>
                                 </div>
                             </div>
 
+                            <!-- Review Comment -->
                             <div class="mb-4">
                                 <label for="comment" class="form-label">Your Review</label>
                                 <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
@@ -124,88 +119,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_review'])) {
                 </div>
             </div>
         </div>
-        <?php else: ?>
-        <div class="row justify-content-center mb-5">
-            <div class="col-md-8">
-                <div class="alert alert-info text-center">
-                    <h4>Want to share your experience?</h4>
-                    <p>Please <a href="../auth/login.php" class="alert-link">login</a> to add your review.</p>
-                </div>
-            </div>
+    <?php else: ?>
+        <div class="alert alert-info text-center">
+            <h4>Want to share your experience?</h4>
+            <p>Please <a href="../auth/login.php" class="alert-link">login</a> to add your review.</p>
         </div>
-        <?php endif; ?>
-    </div>
+    <?php endif; ?>
 
     <!-- Reviews List Section -->
-    <div class="container mb-5">
-        <h2 class="text-center mb-4">
-            All Reviews
-            <?php if(!isset($_SESSION['user_id'])): ?>
-            <div class="mt-2">
-                <small class="text-muted">
-                    <a href="../auth/login.php" class="text-decoration-none">Login</a> to add your review
-                </small>
-            </div>
-            <?php endif; ?>
-        </h2>
-        <div class="row">
-            <?php
-            // Fetch all reviews with user names and user_id for deletion check
-            $reviews_query = "SELECT r.*, u.name, u.user_id 
-                            FROM reviews r 
-                            JOIN users u ON r.user_id = u.user_id 
-                            ORDER BY r.created_at DESC";
-            $reviews_result = $conn->query($reviews_query);
+    <div class="row">
+        <?php
+        $reviews_query = "SELECT r.*, u.name, u.user_id FROM reviews r 
+                          JOIN users u ON r.user_id = u.user_id 
+                          ORDER BY r.created_at DESC";
+        $reviews_result = $conn->query($reviews_query);
 
-            if ($reviews_result && $reviews_result->num_rows > 0) {
-                while ($review = $reviews_result->fetch_assoc()) {
-                    ?>
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title"><?php echo htmlspecialchars($review['name']); ?></h5>
-                                    <div>
-                                        <small class="text-muted me-3"><?php echo date('M d, Y', strtotime($review['created_at'])); ?></small>
-                                        <?php if (isset($_SESSION['user_id']) && $review['user_id'] == $_SESSION['user_id']): ?>
-                                            <form action="delete_review.php" method="POST" style="display: inline;">
-                                                <input type="hidden" name="review_id" value="<?php echo $review['review_id']; ?>">
-                                                <button type="submit" class="btn btn-danger btn-sm" 
-                                                        onclick="return confirm('Are you sure you want to delete this review?')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        <?php endif; ?>
-                                    </div>
+        if ($reviews_result && $reviews_result->num_rows > 0):
+            while ($review = $reviews_result->fetch_assoc()):
+                ?>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="card-title"><?php echo htmlspecialchars($review['name']); ?></h5>
+                                <div>
+                                    <small class="text-muted me-3"><?php echo date('M d, Y', strtotime($review['created_at'])); ?></small>
+                                    <?php if (isset($_SESSION['user_id']) && $review['user_id'] == $_SESSION['user_id']): ?>
+                                        <form action="delete_review.php" method="POST" style="display: inline;">
+                                            <input type="hidden" name="review_id" value="<?php echo $review['review_id']; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this review?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="mb-3">
-                                    <?php
-                                    for ($i = 1; $i <= 5; $i++) {
-                                        echo '<i class="fas fa-star" style="color: ' . ($i <= $review['rating'] ? '#ffd700' : '#ddd') . '"></i>';
-                                    }
-                                    ?>
-                                </div>
-                                <p class="card-text"><?php echo nl2br(htmlspecialchars($review['comment'])); ?></p>
                             </div>
+                            <div class="mb-3">
+                                <?php
+                                for ($i = 1; $i <= 5; $i++) {
+                                    echo '<i class="fas fa-star" style="color: ' . ($i <= $review['rating'] ? '#ffd700' : '#ddd') . '"></i>';
+                                }
+                                ?>
+                            </div>
+                            <p class="card-text"><?php echo nl2br(htmlspecialchars($review['comment'])); ?></p>
                         </div>
                     </div>
-                    <?php
-                }
-            } else {
-                ?>
-                <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        No reviews yet. Be the first to add one!
-                    </div>
                 </div>
-                <?php
-            }
-            $conn->close();
+            <?php
+            endwhile;
+        else:
             ?>
-        </div>
+            <div class="col-12">
+                <div class="alert alert-info text-center">No reviews yet. Be the first to add one!</div>
+            </div>
+        <?php
+        endif;
+        $conn->close();
+        ?>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 <?php require_once '../includes/footer.php'; ?>

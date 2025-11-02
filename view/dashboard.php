@@ -235,7 +235,7 @@ $statsStmt->close();
                 <a href="#" class="nav-link active"><i class="bi bi-speedometer2"></i> Dashboard</a>
                 <a href="../tasks/my_task.php" class="nav-link"><i class="bi bi-briefcase"></i> My Tasks</a>
                 <a href="../tasks/assign_task.php" class="nav-link"><i class="bi bi-people"></i> Assigned Tasks</a>
-                <a href="#" class="nav-link"><i class="bi bi-gear"></i> Settings</a>
+                <a href="../tasks/settings.php" class="nav-link"><i class="bi bi-gear"></i> Settings</a>
                 <a href="../auth/logout.php" class="nav-link text-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
             </nav>
 
@@ -456,11 +456,11 @@ $statsStmt->close();
         </main>
     </div>
 
-<!--    <!-- DEBUG CONSOLE -->-->
-<!--    <div id="debugConsole">-->
-<!--        <div style="font-weight:bold; margin-bottom:8px; border-bottom:2px solid #3b82f6; padding-bottom:4px;">🔍 DEBUG CONSOLE</div>-->
-<!--        <div id="debugLogs"></div>-->
-<!--    </div>-->
+    <!-- DEBUG CONSOLE -->
+    <div id="debugConsole">
+        <div style="font-weight:bold; margin-bottom:8px; border-bottom:2px solid #3b82f6; padding-bottom:4px;">🔍 DEBUG CONSOLE</div>
+        <div id="debugLogs"></div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>

@@ -32,4 +32,5 @@ if ($res->num_rows === 0) {
     }
 }
 $stmt->close();
+?>
 

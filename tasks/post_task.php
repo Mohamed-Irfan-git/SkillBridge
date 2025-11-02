@@ -4,6 +4,7 @@ session_start();
 require_once '../includes/header.php';
 require_once '../config/db_connection.php';
 
+// Redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../auth/login.php");
     exit();
@@ -23,7 +24,7 @@ if (isset($_POST['create_task'])) {
     $photo_path = NULL;
     if (!empty($_FILES['task_photo']['name'])) {
         $target_dir = "../uploads/tasks/";
-        if(!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+        if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
 
         $file_name = time() . '_' . basename($_FILES['task_photo']['name']);
         $target_file = $target_dir . $file_name;
@@ -31,20 +32,25 @@ if (isset($_POST['create_task'])) {
         if (move_uploaded_file($_FILES['task_photo']['tmp_name'], $target_file)) {
             $photo_path = $file_name;
         } else {
-            $error = "❌ Failed to upload photo.";
+            $error = "❌ Failed to upload photo. Check folder permissions.";
         }
     }
 
+    // Insert into database
     if (!$error) {
         $stmt = $conn->prepare("INSERT INTO tasks (user_id, title, description, skill_required, deadline, photo) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssss", $user_id, $title, $description, $skill_required, $deadline, $photo_path);
-
-        if ($stmt->execute()) {
-            $success = "✅ Task created successfully!";
+        if (!$stmt) {
+            $error = "❌ Prepare failed: " . $conn->error;
         } else {
-            $error = "❌ Failed to create task. Try again.";
+            $stmt->bind_param("isssss", $user_id, $title, $description, $skill_required, $deadline, $photo_path);
+
+            if ($stmt->execute()) {
+                $success = "✅ Task created successfully!";
+            } else {
+                $error = "❌ Failed to create task: " . $stmt->error;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 
@@ -55,32 +61,28 @@ $conn->close();
     <div class="task-card p-5">
         <h2 class="text-center mb-4">📌 Post a Task</h2>
 
-        <?php if($error): ?>
+        <?php if ($error): ?>
             <div class="alert alert-danger text-center"><?php echo $error; ?></div>
-        <?php elseif($success): ?>
+        <?php elseif ($success): ?>
             <div class="alert alert-success text-center"><?php echo $success; ?></div>
         <?php endif; ?>
 
         <form action="" method="POST" enctype="multipart/form-data">
-            <!-- TASK TITLE -->
             <div class="mb-4">
                 <label class="form-label">Task Title</label>
                 <input type="text" name="title" class="form-control" placeholder="e.g., Build a WordPress Website" required>
             </div>
 
-            <!-- DESCRIPTION -->
             <div class="mb-4">
                 <label class="form-label">Task Description</label>
                 <textarea name="description" class="form-control" rows="6" placeholder="Provide detailed requirements..." required></textarea>
             </div>
 
-            <!-- SKILL REQUIRED -->
             <div class="mb-4">
                 <label class="form-label">Skills Required</label>
                 <input type="text" name="skill_required" class="form-control" placeholder="e.g., Web Development, Photoshop" required>
             </div>
 
-            <!-- DEADLINE & FILE UPLOAD -->
             <div class="row mb-4 g-3">
                 <div class="col-md-6">
                     <label class="form-label">Deadline</label>
@@ -114,37 +116,13 @@ $conn->close();
         transform: translateY(-5px);
         box-shadow: 0 20px 50px rgba(0,0,0,0.2);
     }
-
-    /* Form Inputs */
     .task-card .form-control {
         background: #f8f9fa;
         border: 1px solid #ddd;
         border-radius: 10px;
         padding: 12px;
         font-size: 1rem;
-        transition: all 0.3s ease;
     }
-    .task-card .form-control:focus {
-        border-color: #00bfff;
-        box-shadow: 0 0 10px rgba(0,191,255,0.3);
-        outline: none;
-        background: #fff;
-    }
-
-    /* Labels */
-    .task-card .form-label {
-        font-weight: 500;
-        font-size: 0.95rem;
-        color: #333;
-    }
-
-    /* Placeholder color */
-    .task-card ::placeholder {
-        color: #aaa;
-        opacity: 1;
-    }
-
-    /* Gradient Button */
     .btn-gradient {
         background: linear-gradient(90deg, #00c6ff, #0072ff);
         border: none;
@@ -153,12 +131,9 @@ $conn->close();
         font-weight: 600;
         color: #fff;
         border-radius: 10px;
-        transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(0,112,255,0.3);
     }
     .btn-gradient:hover {
         background: linear-gradient(90deg, #0072ff, #00c6ff);
-        box-shadow: 0 8px 25px rgba(0,112,255,0.5);
     }
 </style>
 
