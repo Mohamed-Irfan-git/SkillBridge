@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../config/db_connection.php';
 
 // Notifications
@@ -175,6 +177,8 @@ if (isset($_SESSION['user_id'])) {
         <ul class="navbar-nav d-none d-lg-flex flex-row align-items-center mb-0">
             <li class="nav-item"><a class="nav-link" href="../index.php">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="../tasks/tasks.php">Tasks</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="/SkillBridge/reviews/add_review.php">Reviews</a></li>
             <li class="nav-item">
                 <a class="nav-link notification-icon" href="../view/notification.php">
                     <i class="fas fa-bell"></i>

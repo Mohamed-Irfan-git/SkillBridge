@@ -100,13 +100,10 @@ CREATE TABLE IF NOT EXISTS points_log (
 -- --------------------------------------------------
 CREATE TABLE IF NOT EXISTS reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
-    task_id INT,
-    reviewer_id INT,
-    freelancer_id INT,
-    rating INT,
+    user_id INT,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
-    date DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
-    FOREIGN KEY (reviewer_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (freelancer_id) REFERENCES users(user_id) ON DELETE CASCADE
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
