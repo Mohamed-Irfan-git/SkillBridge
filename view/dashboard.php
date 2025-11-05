@@ -457,7 +457,7 @@ $statsStmt->close();
     </div>
 
     <!-- DEBUG CONSOLE -->
-    <div id="debugConsole">
+    <div id="debugConsole" style="display:none;">
         <div style="font-weight:bold; margin-bottom:8px; border-bottom:2px solid #3b82f6; padding-bottom:4px;">🔍 DEBUG CONSOLE</div>
         <div id="debugLogs"></div>
     </div>
